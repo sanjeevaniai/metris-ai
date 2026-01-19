@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* METRIS Scoring Platform Design System
+   Bloomberg Terminal Aesthetic - Dark, Professional, Data-Dense
+   "We score. You fix. Come back when ready."
+*/
+
+@layer base {
+  :root {
+    /* Backgrounds */
+    --background: 220 20% 7%;        /* #0f1419 - Main background */
+    --background-secondary: 222 25% 11%;  /* #1a1f2e - Cards, panels */
+    --background-tertiary: 222 22% 16%;   /* #242d3d - Hover states */
+
+    /* Text */
+    --foreground: 210 40% 98%;       /* #f7fafc - Primary text */
+    --foreground-secondary: 218 15% 65%;  /* #a0aec0 - Secondary text */
+    --foreground-muted: 218 15% 45%;      /* #718096 - Muted text */
+
+    /* Brand - METRIS Teal */
+    --primary: 166 76% 42%;          /* #00d4aa - Brand primary */
+    --primary-foreground: 220 20% 7%;
+
+    /* Cards & Surfaces */
+    --card: 222 25% 11%;
+    --card-foreground: 210 40% 98%;
+    --card-elevated: 222 22% 16%;
+
+    --popover: 222 25% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Secondary */
+    --secondary: 222 22% 16%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted */
+    --muted: 222 22% 16%;
+    --muted-foreground: 218 15% 50%;
+
+    /* Accent */
+    --accent: 166 76% 42%;
+    --accent-foreground: 220 20% 7%;
+
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders */
+    --border: 222 15% 20%;
+    --border-subtle: 222 10% 15%;
+    --input: 222 22% 16%;
+    --ring: 166 76% 42%;
+
+    --radius: 0.5rem;
+
+    /* Tier Colors - NO BINARY PASS/FAIL */
+    --tier-exemplary: 271 76% 53%;        /* Purple */
+    --tier-strong: 142 71% 45%;           /* Green */
+    --tier-moderate: 38 92% 50%;          /* Amber */
+    --tier-weak: 24 94% 53%;              /* Orange */
+    --tier-critical: 0 84% 60%;           /* Red */
+    --tier-minimal: 220 9% 46%;           /* Gray */
+
+    /* Status Colors - Bloomberg Style */
+    --status-critical: 0 72% 51%;         /* #ef4444 Red */
+    --status-warning: 38 92% 50%;         /* #f59e0b Amber */
+    --status-good: 142 71% 45%;           /* #22c55e Green */
+    --status-excellent: 271 76% 53%;      /* #8b5cf6 Purple */
+
+    /* Score Tiers (legacy compatibility) */
+    --score-excellent: 271 76% 53%;       /* 900-1000 Exemplary */
+    --score-good: 142 71% 45%;            /* 750-899 Strong */
+    --score-fair: 38 92% 50%;             /* 600-749 Moderate */
+    --score-poor: 0 84% 60%;              /* Below 600 */
+
+    /* Brand Secondary */
+    --brand-secondary: 199 89% 48%;       /* #0ea5e9 Blue accent */
+
+    /* Sidebar */
+    --sidebar-background: 220 20% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 166 76% 42%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 222 22% 16%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 15% 15%;
+    --sidebar-ring: 166 76% 42%;
+  }
+
+  .dark {
+    /* Same as root - dark only */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  /* All scores and financial figures in monospace */
+  .font-mono, .score-display, .financial-figure {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-feature-settings: 'tnum' 1, 'zero' 1;
+  }
+}
+
+/* Utilities */
+@layer utilities {
+  /* Bloomberg-style card with shadow */
+  .card-terminal {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 20px -4px hsl(0 0% 0% / 0.3), 0 2px 8px -2px hsl(0 0% 0% / 0.2);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .card-terminal:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 8px 30px -6px hsl(0 0% 0% / 0.4), 0 4px 12px -2px hsl(0 0% 0% / 0.25), 0 0 20px -5px hsl(var(--primary) / 0.15);
+  }
+
+  /* Elevated card for important content */
+  .card-elevated {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 10px 40px -10px hsl(0 0% 0% / 0.5), 0 4px 16px -4px hsl(0 0% 0% / 0.3);
+  }
+
+  /* Glow effect for primary actions */
+  .glow-primary {
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.4);
+  }
+
+  .glow-primary:hover {
+    box-shadow: 0 0 30px -5px hsl(var(--primary) / 0.6);
+  }
+
+  /* Button shadow */
+  .btn-shadow {
+    box-shadow: 0 2px 8px -2px hsl(var(--primary) / 0.4);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-shadow:hover {
+    box-shadow: 0 4px 16px -4px hsl(var(--primary) / 0.5);
+    transform: translateY(-1px);
+  }
+
+  /* Inner glow for inputs */
+  .input-glow:focus {
+    box-shadow: inset 0 1px 0 0 hsl(var(--primary) / 0.1), 0 0 0 2px hsl(var(--primary) / 0.2);
+  }
+
+  /* Blurred score effect */
+  .blurred-score {
+    filter: blur(8px);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .blurred-score-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .blurred-score-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      hsl(166 76% 42% / 0.1) 0%,
+      hsl(166 76% 42% / 0.05) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Verdict badges */
+  .verdict-pass {
+    color: hsl(var(--verdict-pass));
+    background: hsl(var(--verdict-pass) / 0.1);
+  }
+
+  .verdict-conditional {
+    color: hsl(var(--verdict-conditional));
+    background: hsl(var(--verdict-conditional) / 0.1);
+  }
+
+  .verdict-major {
+    color: hsl(var(--verdict-major));
+    background: hsl(var(--verdict-major) / 0.1);
+  }
+
+  .verdict-fail {
+    color: hsl(var(--verdict-fail));
+    background: hsl(var(--verdict-fail) / 0.1);
+  }
+
+  /* Primary gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(166 76% 42%) 0%, hsl(180 70% 50%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Subtle glow */
+  .glow-primary {
+    box-shadow: 0 0 40px hsl(166 76% 42% / 0.15);
+  }
+
+  /* Processing animation */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Voice waveform animation */
+  .animate-waveform {
+    animation: waveform 1s ease-in-out infinite;
+  }
+
+  /* LCD Display - Recessed panel look */
+  .lcd-display {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(222 25% 9%) 100%
+    );
+    box-shadow: 
+      inset 0 2px 4px hsl(0 0% 0% / 0.3),
+      inset 0 0 20px hsl(0 0% 0% / 0.2);
+  }
+}
+
+/* Keyframes */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes waveform {
+  0%, 100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Scrollbar - Minimal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Focus states - Accessible but subtle */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* Scout bob animation */
+@keyframes scout-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}

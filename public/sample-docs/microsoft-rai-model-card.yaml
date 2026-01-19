@@ -1,0 +1,178 @@
+# Microsoft Responsible AI Toolkit - Model Card
+# Based on: https://github.com/microsoft/responsible-ai-toolbox
+# Sample document for METRIS demo
+
+model:
+  name: "Microsoft RAI Credit Scoring Model"
+  version: "2.1.0"
+  type: "Classification"
+  framework: "scikit-learn + InterpretML"
+  created_date: "2024-01-15"
+  last_updated: "2024-12-10"
+  
+organization:
+  name: "Microsoft Corporation"
+  team: "Responsible AI Team"
+  contact: "rai-team@microsoft.com"
+  
+intended_use:
+  primary_purpose: "Automated credit scoring decisions for loan applications"
+  intended_users:
+    - "Financial institutions"
+    - "Credit bureaus"
+    - "Lending platforms"
+  out_of_scope_uses:
+    - "Criminal justice decisions"
+    - "Employment screening without human review"
+    - "Healthcare treatment decisions"
+
+model_details:
+  architecture: "Gradient Boosted Decision Trees with InterpretML wrapper"
+  input_features:
+    - name: "income"
+      type: "numerical"
+      description: "Annual income in USD"
+    - name: "employment_length"
+      type: "numerical"  
+      description: "Years at current employer"
+    - name: "debt_to_income"
+      type: "numerical"
+      description: "Debt to income ratio"
+    - name: "credit_history_length"
+      type: "numerical"
+      description: "Length of credit history in years"
+    - name: "num_accounts"
+      type: "numerical"
+      description: "Number of credit accounts"
+  output:
+    type: "binary_classification"
+    labels: ["low_risk", "high_risk"]
+    threshold: 0.5
+    
+training_data:
+  source: "Synthetic credit data based on public datasets"
+  size: 150000
+  collection_period: "2020-2024"
+  preprocessing:
+    - "Missing value imputation using median"
+    - "Feature scaling using StandardScaler"
+    - "Outlier removal (3 sigma)"
+  known_limitations:
+    - "Limited representation of recent credit behaviors"
+    - "Potential bias in historical lending patterns"
+
+performance_metrics:
+  overall:
+    accuracy: 0.847
+    precision: 0.812
+    recall: 0.789
+    f1_score: 0.800
+    auc_roc: 0.891
+  fairness_metrics:
+    demographic_parity_difference: 0.08
+    equalized_odds_difference: 0.12
+    calibration_error: 0.045
+  evaluated_on: "Hold-out test set (20%)"
+
+fairness_analysis:
+  tool: "Fairlearn + RAI Toolbox"
+  sensitive_attributes:
+    - "age_group"
+    - "gender"
+    - "geographic_region"
+  mitigation_applied:
+    method: "Threshold Optimizer"
+    constraint: "Demographic Parity"
+  residual_disparities:
+    - attribute: "age_group"
+      disparity: 0.08
+      status: "Within acceptable bounds"
+    - attribute: "gender"
+      disparity: 0.05
+      status: "Within acceptable bounds"
+    - attribute: "geographic_region"  
+      disparity: 0.15
+      status: "REQUIRES ATTENTION"
+
+explainability:
+  global_explanations:
+    tool: "InterpretML"
+    method: "Explainable Boosting Machine"
+    top_features:
+      - name: "debt_to_income"
+        importance: 0.32
+      - name: "credit_history_length"
+        importance: 0.28
+      - name: "income"
+        importance: 0.18
+  local_explanations:
+    available: true
+    method: "SHAP values"
+    
+error_analysis:
+  tool: "Error Analysis Dashboard"
+  high_error_cohorts:
+    - cohort: "Low income + Short credit history"
+      error_rate: 0.23
+      size: 5200
+      recommendation: "Additional review for this segment"
+    - cohort: "High debt_to_income + Young age"
+      error_rate: 0.19
+      size: 3800
+      recommendation: "Consider alternative data sources"
+
+governance:
+  human_oversight:
+    required: true
+    threshold: "All decisions above $50,000"
+  appeal_process:
+    available: true
+    contact: "credit-appeals@bank.com"
+  monitoring:
+    frequency: "Weekly"
+    drift_detection: true
+    retraining_trigger: "PSI > 0.2"
+  documentation:
+    model_card_version: "1.2"
+    last_review_date: "2024-11-01"
+    next_review_date: "2025-02-01"
+
+regulatory_compliance:
+  eu_ai_act:
+    risk_category: "High Risk"
+    article_requirements:
+      - article: "Art. 9"
+        description: "Risk Management System"
+        status: "Compliant"
+      - article: "Art. 10"
+        description: "Data Governance"
+        status: "Partial"
+      - article: "Art. 11"
+        description: "Technical Documentation"
+        status: "Compliant"
+      - article: "Art. 13"
+        description: "Transparency"
+        status: "Partial"
+      - article: "Art. 14"
+        description: "Human Oversight"
+        status: "Compliant"
+  nist_ai_rmf:
+    functions:
+      - name: "GOVERN"
+        status: "Implemented"
+      - name: "MAP"
+        status: "Implemented"
+      - name: "MEASURE"
+        status: "Partial"
+      - name: "MANAGE"
+        status: "Partial"
+
+known_issues:
+  - id: "ISSUE-001"
+    severity: "medium"
+    description: "Geographic disparity exceeds threshold in Northeast region"
+    mitigation: "Under investigation - Q1 2025 remediation planned"
+  - id: "ISSUE-002"  
+    severity: "low"
+    description: "Model latency increases during peak hours"
+    mitigation: "Infrastructure scaling in progress"

@@ -1,0 +1,255 @@
+{
+  "report_metadata": {
+    "title": "Microsoft RAI Error Analysis Report",
+    "model_name": "Credit Scoring Model v2.1",
+    "generated_by": "RAI Error Analysis Dashboard",
+    "generation_date": "2024-12-10",
+    "total_samples_analyzed": 30000
+  },
+  "overall_performance": {
+    "accuracy": 0.847,
+    "error_rate": 0.153,
+    "false_positive_rate": 0.089,
+    "false_negative_rate": 0.064,
+    "samples_with_errors": 4590
+  },
+  "error_tree": {
+    "root": {
+      "total_errors": 4590,
+      "total_samples": 30000,
+      "error_rate": 0.153
+    },
+    "splits": [
+      {
+        "feature": "debt_to_income",
+        "threshold": 0.4,
+        "children": [
+          {
+            "condition": "debt_to_income <= 0.4",
+            "samples": 18000,
+            "errors": 1620,
+            "error_rate": 0.09,
+            "status": "ACCEPTABLE"
+          },
+          {
+            "condition": "debt_to_income > 0.4",
+            "samples": 12000,
+            "errors": 2970,
+            "error_rate": 0.248,
+            "status": "HIGH_ERROR",
+            "children": [
+              {
+                "feature": "credit_history_length",
+                "threshold": 3,
+                "children": [
+                  {
+                    "condition": "credit_history_length <= 3 years",
+                    "samples": 5200,
+                    "errors": 1196,
+                    "error_rate": 0.23,
+                    "status": "CRITICAL",
+                    "cohort_id": "COHORT_001"
+                  },
+                  {
+                    "condition": "credit_history_length > 3 years",
+                    "samples": 6800,
+                    "errors": 1774,
+                    "error_rate": 0.261,
+                    "status": "CRITICAL",
+                    "cohort_id": "COHORT_002"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "high_error_cohorts": [
+    {
+      "cohort_id": "COHORT_001",
+      "name": "High DTI + Short Credit History",
+      "description": "Applicants with debt-to-income > 0.4 and credit history <= 3 years",
+      "filter_conditions": {
+        "debt_to_income": "> 0.4",
+        "credit_history_length": "<= 3 years"
+      },
+      "statistics": {
+        "total_samples": 5200,
+        "total_errors": 1196,
+        "error_rate": 0.23,
+        "false_positives": 720,
+        "false_negatives": 476,
+        "percentage_of_total_errors": 0.26
+      },
+      "demographic_breakdown": {
+        "age_18_25": 0.42,
+        "age_26_35": 0.38,
+        "age_36_50": 0.15,
+        "age_51_plus": 0.05
+      },
+      "root_causes": [
+        "Young professionals with student debt",
+        "Recent immigrants with limited US credit history",
+        "Career changers with income volatility"
+      ],
+      "recommendations": [
+        {
+          "action": "Incorporate alternative credit data (rent, utilities)",
+          "expected_impact": "Reduce error rate by 8-12%",
+          "effort": "Medium"
+        },
+        {
+          "action": "Add income trajectory feature",
+          "expected_impact": "Reduce error rate by 5-7%",
+          "effort": "Low"
+        },
+        {
+          "action": "Implement manual review for this cohort",
+          "expected_impact": "100% human oversight",
+          "effort": "Quick"
+        }
+      ],
+      "risk_assessment": {
+        "financial_exposure": 2400000,
+        "regulatory_risk": "HIGH",
+        "reputational_risk": "MEDIUM"
+      }
+    },
+    {
+      "cohort_id": "COHORT_002",
+      "name": "High DTI + Established Credit",
+      "description": "Applicants with debt-to-income > 0.4 but credit history > 3 years",
+      "filter_conditions": {
+        "debt_to_income": "> 0.4",
+        "credit_history_length": "> 3 years"
+      },
+      "statistics": {
+        "total_samples": 6800,
+        "total_errors": 1774,
+        "error_rate": 0.261,
+        "false_positives": 890,
+        "false_negatives": 884,
+        "percentage_of_total_errors": 0.39
+      },
+      "root_causes": [
+        "Recent life events (divorce, medical expenses)",
+        "Housing market conditions affecting DTI",
+        "Business owners with irregular income"
+      ],
+      "recommendations": [
+        {
+          "action": "Add recent payment behavior features",
+          "expected_impact": "Reduce error rate by 10-15%",
+          "effort": "Medium"
+        },
+        {
+          "action": "Incorporate cash flow analysis",
+          "expected_impact": "Reduce error rate by 8-12%",
+          "effort": "High"
+        }
+      ],
+      "risk_assessment": {
+        "financial_exposure": 3100000,
+        "regulatory_risk": "MEDIUM",
+        "reputational_risk": "HIGH"
+      }
+    },
+    {
+      "cohort_id": "COHORT_003",
+      "name": "Young Age + Low Income",
+      "description": "Applicants aged 18-25 with income < $40,000",
+      "filter_conditions": {
+        "age": "18-25",
+        "income": "< $40,000"
+      },
+      "statistics": {
+        "total_samples": 3800,
+        "total_errors": 722,
+        "error_rate": 0.19,
+        "false_positives": 380,
+        "false_negatives": 342,
+        "percentage_of_total_errors": 0.16
+      },
+      "root_causes": [
+        "Limited credit history",
+        "Income potential not captured",
+        "Student debt skewing DTI"
+      ],
+      "recommendations": [
+        {
+          "action": "Consider education level as feature",
+          "expected_impact": "Reduce error rate by 4-6%",
+          "effort": "Low"
+        }
+      ],
+      "risk_assessment": {
+        "financial_exposure": 1200000,
+        "regulatory_risk": "MEDIUM",
+        "reputational_risk": "LOW"
+      }
+    }
+  ],
+  "feature_importance_in_errors": [
+    {
+      "feature": "debt_to_income",
+      "importance_in_correct": 0.28,
+      "importance_in_errors": 0.41,
+      "delta": 0.13,
+      "interpretation": "Model over-relies on DTI for borderline cases"
+    },
+    {
+      "feature": "credit_history_length",
+      "importance_in_correct": 0.22,
+      "importance_in_errors": 0.35,
+      "delta": 0.13,
+      "interpretation": "Short credit history leads to higher uncertainty"
+    },
+    {
+      "feature": "income",
+      "importance_in_correct": 0.18,
+      "importance_in_errors": 0.12,
+      "delta": -0.06,
+      "interpretation": "Income is less predictive of errors"
+    }
+  ],
+  "counterfactual_analysis": {
+    "summary": "Counterfactual explanations generated for 500 error cases",
+    "common_minimal_changes": [
+      {
+        "change": "Reduce debt_to_income by 0.08",
+        "frequency": 0.34,
+        "interpretation": "Small DTI improvement would flip 34% of false negatives"
+      },
+      {
+        "change": "Increase credit_history_length by 1.2 years",
+        "frequency": 0.28,
+        "interpretation": "Additional credit history would help 28% of cases"
+      }
+    ]
+  },
+  "remediation_priority": {
+    "immediate": [
+      {
+        "action": "Implement human review for COHORT_001 and COHORT_002",
+        "roi_impact": 5500000,
+        "effort": "1 week"
+      }
+    ],
+    "short_term": [
+      {
+        "action": "Add alternative credit data features",
+        "roi_impact": 2800000,
+        "effort": "4-6 weeks"
+      }
+    ],
+    "long_term": [
+      {
+        "action": "Retrain model with balanced sampling",
+        "roi_impact": 1500000,
+        "effort": "8-12 weeks"
+      }
+    ]
+  }
+}

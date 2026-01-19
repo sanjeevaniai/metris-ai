@@ -1,0 +1,189 @@
+{
+  "report_metadata": {
+    "title": "Microsoft RAI Fairness Assessment Report",
+    "model_name": "Credit Scoring Model v2.1",
+    "generated_by": "Fairlearn + RAI Toolbox",
+    "generation_date": "2024-12-10",
+    "assessment_period": "Q4 2024"
+  },
+  "executive_summary": {
+    "overall_fairness_status": "NEEDS_ATTENTION",
+    "total_sensitive_attributes_analyzed": 4,
+    "attributes_passing": 3,
+    "attributes_requiring_action": 1,
+    "key_finding": "Geographic disparity in Northeast region exceeds acceptable threshold"
+  },
+  "sensitive_attributes_analysis": [
+    {
+      "attribute": "gender",
+      "categories": ["male", "female", "non_binary"],
+      "metrics": {
+        "demographic_parity_difference": 0.045,
+        "equalized_odds_difference": 0.052,
+        "predictive_parity_difference": 0.038,
+        "calibration_error": 0.022
+      },
+      "thresholds": {
+        "demographic_parity_difference": 0.10,
+        "equalized_odds_difference": 0.10
+      },
+      "status": "PASS",
+      "breakdown": [
+        {"category": "male", "positive_rate": 0.72, "sample_size": 45000},
+        {"category": "female", "positive_rate": 0.68, "sample_size": 48000},
+        {"category": "non_binary", "positive_rate": 0.70, "sample_size": 2500}
+      ]
+    },
+    {
+      "attribute": "age_group",
+      "categories": ["18-25", "26-35", "36-50", "51-65", "65+"],
+      "metrics": {
+        "demographic_parity_difference": 0.078,
+        "equalized_odds_difference": 0.089,
+        "predictive_parity_difference": 0.065,
+        "calibration_error": 0.041
+      },
+      "thresholds": {
+        "demographic_parity_difference": 0.10,
+        "equalized_odds_difference": 0.10
+      },
+      "status": "PASS",
+      "breakdown": [
+        {"category": "18-25", "positive_rate": 0.58, "sample_size": 18000},
+        {"category": "26-35", "positive_rate": 0.71, "sample_size": 32000},
+        {"category": "36-50", "positive_rate": 0.75, "sample_size": 28000},
+        {"category": "51-65", "positive_rate": 0.73, "sample_size": 15000},
+        {"category": "65+", "positive_rate": 0.69, "sample_size": 7000}
+      ],
+      "notes": "Young applicants (18-25) show lower approval rates. This correlates with shorter credit history rather than age discrimination."
+    },
+    {
+      "attribute": "geographic_region",
+      "categories": ["Northeast", "Southeast", "Midwest", "Southwest", "West"],
+      "metrics": {
+        "demographic_parity_difference": 0.152,
+        "equalized_odds_difference": 0.178,
+        "predictive_parity_difference": 0.124,
+        "calibration_error": 0.089
+      },
+      "thresholds": {
+        "demographic_parity_difference": 0.10,
+        "equalized_odds_difference": 0.10
+      },
+      "status": "FAIL",
+      "breakdown": [
+        {"category": "Northeast", "positive_rate": 0.59, "sample_size": 22000},
+        {"category": "Southeast", "positive_rate": 0.71, "sample_size": 28000},
+        {"category": "Midwest", "positive_rate": 0.73, "sample_size": 20000},
+        {"category": "Southwest", "positive_rate": 0.74, "sample_size": 18000},
+        {"category": "West", "positive_rate": 0.72, "sample_size": 27000}
+      ],
+      "root_cause_analysis": {
+        "identified_factors": [
+          "Higher cost of living in Northeast leading to higher debt-to-income ratios",
+          "Historical lending patterns in training data",
+          "Economic regional differences not captured in features"
+        ],
+        "recommended_actions": [
+          "Apply regional cost-of-living normalization to income features",
+          "Implement Threshold Optimizer with regional constraints",
+          "Review and potentially reweight training data"
+        ]
+      }
+    },
+    {
+      "attribute": "income_bracket",
+      "categories": ["<30k", "30k-60k", "60k-100k", "100k-150k", ">150k"],
+      "metrics": {
+        "demographic_parity_difference": 0.089,
+        "equalized_odds_difference": 0.076,
+        "predictive_parity_difference": 0.054,
+        "calibration_error": 0.033
+      },
+      "thresholds": {
+        "demographic_parity_difference": 0.10,
+        "equalized_odds_difference": 0.10
+      },
+      "status": "PASS",
+      "notes": "Income is a legitimate factor in credit decisions, but monitored to ensure no proxy discrimination"
+    }
+  ],
+  "intersectional_analysis": {
+    "high_risk_cohorts": [
+      {
+        "cohort": "Female + Northeast + 18-25",
+        "sample_size": 1850,
+        "positive_rate": 0.48,
+        "comparison_baseline": 0.70,
+        "disparity": 0.22,
+        "status": "CRITICAL",
+        "action_required": true
+      },
+      {
+        "cohort": "Male + <30k income + 18-25",
+        "sample_size": 2400,
+        "positive_rate": 0.52,
+        "comparison_baseline": 0.70,
+        "disparity": 0.18,
+        "status": "WARNING",
+        "action_required": true
+      }
+    ]
+  },
+  "mitigation_strategies_applied": [
+    {
+      "strategy": "Threshold Optimizer",
+      "library": "Fairlearn",
+      "constraint": "Demographic Parity",
+      "applied_to": ["gender", "age_group"],
+      "effectiveness": {
+        "before": {"demographic_parity_difference": 0.12},
+        "after": {"demographic_parity_difference": 0.045}
+      }
+    },
+    {
+      "strategy": "Reweighting",
+      "library": "AIF360",
+      "applied_to": ["income_bracket"],
+      "effectiveness": {
+        "before": {"demographic_parity_difference": 0.15},
+        "after": {"demographic_parity_difference": 0.089}
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "area": "Geographic Disparity",
+      "action": "Implement regional fairness constraints using Threshold Optimizer",
+      "estimated_effort": "2-3 weeks",
+      "expected_improvement": "Reduce DPD from 0.152 to <0.08"
+    },
+    {
+      "priority": "HIGH", 
+      "area": "Intersectional Bias",
+      "action": "Create specialized review process for high-risk cohorts",
+      "estimated_effort": "1-2 weeks",
+      "expected_improvement": "Ensure human review for 100% of flagged cases"
+    },
+    {
+      "priority": "MEDIUM",
+      "area": "Continuous Monitoring",
+      "action": "Implement real-time fairness dashboards with alerting",
+      "estimated_effort": "3-4 weeks",
+      "expected_improvement": "Early detection of emerging disparities"
+    }
+  ],
+  "compliance_mapping": {
+    "eu_ai_act_article_10": {
+      "requirement": "Training data shall be subject to appropriate data governance",
+      "status": "PARTIAL",
+      "gaps": ["Geographic bias in historical data requires remediation"]
+    },
+    "eu_ai_act_article_13": {
+      "requirement": "High-risk AI systems shall be designed to enable oversight",
+      "status": "COMPLIANT",
+      "evidence": ["Fairness reports generated monthly", "Audit trail maintained"]
+    }
+  }
+}

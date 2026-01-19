@@ -1,0 +1,21 @@
+project_id = "gkcqzdbzandkqnvpccvv"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+
+[functions.scout-ai]
+verify_jwt = false
+
+[functions.elevenlabs-conversation-token]
+verify_jwt = false
+
+[functions.elevenlabs-tts]
+verify_jwt = false
+
+[functions.scout-conversation]
+verify_jwt = false
+
+[functions.get-signed-url]
+verify_jwt = false
